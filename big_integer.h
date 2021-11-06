@@ -14,6 +14,7 @@ private:
     static const int digits_ = 9;
     std::vector<int32_t> data_;
     bool sign_ = false;
+    bool is_zero() const;
 
 public:
     std::vector<int32_t> data();
@@ -25,10 +26,13 @@ public:
                                                                            
     big_integer& operator=(big_integer const& other);                      
 
-    big_integer& add(big_integer const& b);
+    big_integer& add(big_integer const& rhs);
+    big_integer& sub(big_integer const& rhs);
+    big_integer& mul(big_integer const& rhs);
+    big_integer abs() const;
     big_integer& operator+=(big_integer const& rhs);
-    //big_integer& operator-=(big_integer const& rhs);
-    //big_integer& operator*=(big_integer const& rhs);
+    big_integer& operator-=(big_integer const& rhs);
+    big_integer& operator*=(big_integer const& rhs);
     //big_integer& operator/=(big_integer const& rhs);
     //big_integer& operator%=(big_integer const& rhs);
 
@@ -39,15 +43,15 @@ public:
     //big_integer& operator<<=(int rhs);
     //big_integer& operator>>=(int rhs);
 
-    //big_integer operator+() const;
-    //big_integer operator-() const;
-    //big_integer operator~() const;
+    big_integer operator+() const;
+    big_integer operator-() const;
+    big_integer operator~() const;
 
-    //big_integer& operator++();
-    //big_integer operator++(int);
+    big_integer& operator++();
+    big_integer operator++(int);
 
-    //big_integer& operator--();
-    //big_integer operator--(int);
+    big_integer& operator--();
+    big_integer operator--(int);
 
     friend bool operator==(big_integer const& a, big_integer const& b);
     friend bool operator!=(big_integer const& a, big_integer const& b);
@@ -59,9 +63,9 @@ public:
     friend std::string to_string(big_integer const& a);
 };
 
-//big_integer operator+(big_integer a, big_integer const& b);
-//big_integer operator-(big_integer a, big_integer const& b);
-//big_integer operator*(big_integer a, big_integer const& b);
+big_integer operator+(big_integer a, big_integer const& b);
+big_integer operator-(big_integer a, big_integer const& b);
+big_integer operator*(big_integer a, big_integer const& b);
 //big_integer operator/(big_integer a, big_integer const& b);
 //big_integer operator%(big_integer a, big_integer const& b);
 //

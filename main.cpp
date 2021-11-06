@@ -1,5 +1,6 @@
 ﻿#include <iostream>
 #include "big_integer.h"
+#include <cstdlib>
 
 int main()
 {
@@ -8,6 +9,7 @@ int main()
     auto a = big_integer(str);
     std::cin >> str;
     auto b = big_integer(str);
-    a += b;
-    std::cout << to_string(a);
+    std::cout << to_string(~a);
+    int t = 5;
+    std::cout << '\n' <<  ~t;
 }
