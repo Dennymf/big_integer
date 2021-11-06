@@ -23,5 +23,5 @@ __________
   * Constructor from type `string`
 * Implemented a comparison operation `<, >, <=, >=, ==, !=`
 * Implemented the assignment operation `=`
-* The addition operation is implemented, combined with the assignment of '+=' for numbers with the same sign
-* Implemented the `to_string`function - converting a number to a string
+* The addition operation is implemented, combined with the assignment of `+=` for numbers with the same sign
+* Implemented the `to_string` function - converting a number to a string
