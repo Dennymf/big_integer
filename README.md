@@ -26,7 +26,7 @@ __________
 # Library for Arbitrary-precision arithmetic
 
 ### Version 0.2
-* the absolute value of the number `big_integer.abs()`
+* Implemented the function the absolute value of the number `big_integer.abs()`
 * Implemented the addition operation, combined with the assignment of `+=` for any pairs of numbers
 * Implemented a subtraction operation combined with the assignment of `-=` for any pairs of numbers
 * Implemented a multiplication operation, combined with the assignment of `*=` for any pairs of numbers
