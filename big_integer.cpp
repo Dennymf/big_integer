@@ -30,8 +30,8 @@ big_integer::big_integer(int a)
     }
     else
     {
-        data_.push_back(a / 10);
         data_.push_back(a % 10);
+        data_.push_back(a / BASE);
     }
 }
 
@@ -99,7 +99,7 @@ big_integer& big_integer::sub(big_integer const& rhs)
     big_integer mn = this_abs < rhs_abs ? *this : rhs;
     bool neg = (this_abs < rhs_abs) && (this->sign_ == rhs.sign_);
 
-    for (size_t i = 0; i < mx.data_.size(); ++i)
+    for (size_t i = 0; i < mn.data_.size(); ++i)
     {
         if (mx.data_[i] < mn.data_[i])
         {
@@ -108,10 +108,19 @@ big_integer& big_integer::sub(big_integer const& rhs)
             while (mx.data_[j] == 0)
             {
                 mx.data_[j] = BASE - 1;
+                ++j;
             }
             mx.data_[j]--;
+            if (mx.data_[j] == 0)
+            {
+                mx.data_.erase(mx.data_.begin() + j);
+            }
         }
         mx.data_[i] -= mn.data_[i];
+    }
+    while (mx.data_.back() == 0)
+    {
+        mx.data_.pop_back();
     }
     if (neg)
     {
@@ -165,6 +174,81 @@ big_integer& big_integer::mul(big_integer const& rhs)
     return *this;
 }
 
+std::pair<big_integer, big_integer> big_integer::division(big_integer const& rhs)
+{
+    if (rhs.is_zero())
+    {
+        throw std::runtime_error("Runtime error: division by zero");
+    }
+
+    big_integer a(*this);
+    big_integer b(rhs);
+    bool ans_sign = a.sign_ != b.sign_;
+    a.sign_ = false;
+    b.sign_ = false;
+
+    if (a < b)
+    {
+        return { big_integer(), *this };
+    }
+
+    std::vector<int32_t> tmp_data;
+    big_integer div;
+    big_integer mod;
+    div.data_.clear();
+
+    for (size_t i = a.data_.size() - 1;; --i)
+    {
+        tmp_data.push_back(a.data_[i]);
+        big_integer tmp_big;
+        tmp_big.data_.clear();
+        std::reverse(tmp_data.begin(), tmp_data.end());
+        for (size_t j = 0; j < tmp_data.size(); ++j)
+        {
+            tmp_big.data_.push_back(tmp_data[j]);
+        }
+        std::reverse(tmp_data.begin(), tmp_data.end());
+        if (tmp_big >= b)
+        {
+            tmp_data.clear();
+            size_t l = 0, r = BASE;
+            while (l + 1 < r)
+            {
+                size_t m = (l + r) / 2;
+                big_integer tmp(b * m);
+                if (tmp_big >= tmp)
+                {
+                    l = m;
+                }
+                else
+                {
+                    r = m;
+                }
+            }
+            div *= big_integer(BASE);
+            div += l;
+            mod = tmp_big - (b * l);
+            if (!mod.is_zero())
+            {
+                for (size_t j = mod.data_.size() - 1;; --j)
+                {
+                    tmp_data.push_back(mod.data_[j]);
+                    if (j == 0)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+        if (i == 0)
+        {
+            break;
+        }
+    }
+    div.sign_ = ans_sign;
+    return { div, mod };
+}
+
 big_integer big_integer::abs() const
 {
     big_integer tmp = *this;
@@ -187,16 +271,18 @@ big_integer& big_integer::operator*=(big_integer const& rhs)
     return mul(rhs);
 }
 
-//big_integer& big_integer::operator/=(big_integer const& rhs)
-//{
-//    return *this;
-//}
-//
-//big_integer& big_integer::operator%=(big_integer const& rhs)
-//{
-//    return *this;
-//}
-//
+big_integer& big_integer::operator/=(big_integer const& rhs)
+{
+    *this = division(rhs).first;
+    return *this;
+}
+
+big_integer& big_integer::operator%=(big_integer const& rhs)
+{
+    *this = division(rhs).second;
+    return *this;
+}
+
 //big_integer& big_integer::operator&=(big_integer const& rhs)
 //{
 //    return *this;
@@ -285,16 +371,16 @@ big_integer operator*(big_integer a, big_integer const& b)
     return a *= b;
 }
 
-//big_integer operator/(big_integer a, big_integer const& b)
-//{
-//    return a;
-//}
-//
-//big_integer operator%(big_integer a, big_integer const& b)
-//{
-//    return a;
-//}
-//
+big_integer operator/(big_integer a, big_integer const& b)
+{
+    return a /= b;
+}
+
+big_integer operator%(big_integer a, big_integer const& b)
+{
+    return a %= b;
+}
+
 //big_integer operator&(big_integer a, big_integer const& b)
 //{
 //    return a;
@@ -351,11 +437,15 @@ bool operator<(big_integer const& a, big_integer const& b)
     {
         return a.sign_ ? a.data_.size() > b.data_.size() : a.data_.size() < b.data_.size();
     }
-    for (size_t i = 0; i < a.data_.size(); ++i)
+    for (size_t i = a.data_.size() - 1;; --i)
     {
         if (a.data_[i] != b.data_[i])
         {
             return a.sign_ ? a.data_[i] > b.data_[i] : a.data_[i] < b.data_[i];
+        }
+        if (i == 0)
+        {
+            break;
         }
     }
     return false;

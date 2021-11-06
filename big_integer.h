@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cstdint>
 #include <iosfwd>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -29,12 +30,13 @@ public:
     big_integer& add(big_integer const& rhs);
     big_integer& sub(big_integer const& rhs);
     big_integer& mul(big_integer const& rhs);
+    std::pair<big_integer, big_integer> division(big_integer const& rhs);
     big_integer abs() const;
     big_integer& operator+=(big_integer const& rhs);
     big_integer& operator-=(big_integer const& rhs);
     big_integer& operator*=(big_integer const& rhs);
-    //big_integer& operator/=(big_integer const& rhs);
-    //big_integer& operator%=(big_integer const& rhs);
+    big_integer& operator/=(big_integer const& rhs);
+    big_integer& operator%=(big_integer const& rhs);
 
     //big_integer& operator&=(big_integer const& rhs);
     //big_integer& operator|=(big_integer const& rhs);
@@ -66,8 +68,8 @@ public:
 big_integer operator+(big_integer a, big_integer const& b);
 big_integer operator-(big_integer a, big_integer const& b);
 big_integer operator*(big_integer a, big_integer const& b);
-//big_integer operator/(big_integer a, big_integer const& b);
-//big_integer operator%(big_integer a, big_integer const& b);
+big_integer operator/(big_integer a, big_integer const& b);
+big_integer operator%(big_integer a, big_integer const& b);
 //
 //big_integer operator&(big_integer a, big_integer const& b);
 //big_integer operator|(big_integer a, big_integer const& b);

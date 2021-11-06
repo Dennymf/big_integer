@@ -1,5 +1,10 @@
 # Библиотека для длинной арифметики
 
+### Версия 0.3
+* Реализованы операции деления и остатка от деления `/, %`
+* Реализована операция деления, совмещённое с присваиванием `/=` для любых пар чисел
+* Реализована операция остатка от деления, совмещённое с присваиванием `%=` для любых пар чисел
+
 ### Версия 0.2
 * Реализована функция абсолютного значения числа `big_integer.abs()`
 * Реализована операция сложения, совмещённое с присваиванием `+=` для любых пар чисел
@@ -24,6 +29,11 @@
 __________
 
 # Library for Arbitrary-precision arithmetic
+
+### Версия 0.3
+* Implemented the division and module operations `/, %`
+* Implemented a division operation, combined with the assignment of `/=` for any pairs of numbers
+* Implemented a module operation, combined with the assignment of `%=` for any pairs of numbers
 
 ### Version 0.2
 * Implemented the function the absolute value of the number `big_integer.abs()`

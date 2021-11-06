@@ -9,7 +9,6 @@ int main()
     auto a = big_integer(str);
     std::cin >> str;
     auto b = big_integer(str);
-    std::cout << to_string(~a);
-    int t = 5;
-    std::cout << '\n' <<  ~t;
+    //std::cout << to_string(a * b);
+    std::cout << to_string(a / b) << ' ' << to_string(a % b);
 }
