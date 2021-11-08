@@ -64,7 +64,7 @@ big_integer& big_integer::operator=(big_integer const& other) = default;
 big_integer& big_integer::add(big_integer const& rhs)
 {
     int over = 0;
-    bool less = (*this < rhs);
+    bool less = (this->abs() < rhs.abs());
 
     for (size_t i = 0; i < std::min(data_.size(), rhs.data_.size()); ++i)
     {
@@ -76,7 +76,7 @@ big_integer& big_integer::add(big_integer const& rhs)
     {
         if (less)
         {
-            data_.push_back(rhs.data_[i]);
+            data_.push_back(rhs.data_[i] + over);
             over = data_[i] / BASE;
             data_[i] %= BASE;
         }
@@ -118,7 +118,7 @@ big_integer& big_integer::sub(big_integer const& rhs)
         }
         mx.data_[i] -= mn.data_[i];
     }
-    while (mx.data_.back() == 0)
+    while (mx.data_.size() > 1 && mx.data_.back() == 0)
     {
         mx.data_.pop_back();
     }
@@ -159,7 +159,7 @@ big_integer& big_integer::mul(big_integer const& rhs)
         for (size_t j = 0; j < tmp.data_.size(); ++j)
         {
             int64_t t = tmp.data_[j];
-            t *= rhs.data_[i] + over;
+            t = t * rhs.data_[i] + over;
             over = t / BASE;
             tmp.data_[j] = t % BASE;
         }
@@ -215,7 +215,8 @@ std::pair<big_integer, big_integer> big_integer::division(big_integer const& rhs
             while (l + 1 < r)
             {
                 size_t m = (l + r) / 2;
-                big_integer tmp(b * m);
+                big_integer tmp(b);
+                tmp *= m;
                 if (tmp_big >= tmp)
                 {
                     l = m;
@@ -244,8 +245,13 @@ std::pair<big_integer, big_integer> big_integer::division(big_integer const& rhs
         {
             break;
         }
+        mod.data_.clear();
     }
     div.sign_ = ans_sign;
+    if (this->sign_)
+    {
+        mod.sign_ = true;
+    }
     return { div, mod };
 }
 
