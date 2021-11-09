@@ -3,6 +3,8 @@
 
 #include <algorithm>
 #include <cstdint>
+#include <functional>
+#include <fstream>
 #include <iosfwd>
 #include <stdexcept>
 #include <string>
@@ -32,18 +34,21 @@ public:
     big_integer& mul(big_integer const& rhs);
     std::pair<big_integer, big_integer> division(big_integer const& rhs);
     big_integer abs() const;
+    template<typename T>
+    big_integer& logical_op(big_integer const& rhs, T const& op);
+
     big_integer& operator+=(big_integer const& rhs);
     big_integer& operator-=(big_integer const& rhs);
     big_integer& operator*=(big_integer const& rhs);
     big_integer& operator/=(big_integer const& rhs);
     big_integer& operator%=(big_integer const& rhs);
 
-    //big_integer& operator&=(big_integer const& rhs);
-    //big_integer& operator|=(big_integer const& rhs);
-    //big_integer& operator^=(big_integer const& rhs);
+    big_integer& operator&=(big_integer const& rhs);
+    big_integer& operator|=(big_integer const& rhs);
+    big_integer& operator^=(big_integer const& rhs);
 
-    //big_integer& operator<<=(int rhs);
-    //big_integer& operator>>=(int rhs);
+    big_integer& operator<<=(int rhs);
+    big_integer& operator>>=(int rhs);
 
     big_integer operator+() const;
     big_integer operator-() const;
@@ -70,14 +75,14 @@ big_integer operator-(big_integer a, big_integer const& b);
 big_integer operator*(big_integer a, big_integer const& b);
 big_integer operator/(big_integer a, big_integer const& b);
 big_integer operator%(big_integer a, big_integer const& b);
-//
-//big_integer operator&(big_integer a, big_integer const& b);
-//big_integer operator|(big_integer a, big_integer const& b);
-//big_integer operator^(big_integer a, big_integer const& b);
-//
-//big_integer operator<<(big_integer a, int b);
-//big_integer operator>>(big_integer a, int b);
-//
+
+big_integer operator&(big_integer a, big_integer const& b);
+big_integer operator|(big_integer a, big_integer const& b);
+big_integer operator^(big_integer a, big_integer const& b);
+
+big_integer operator<<(big_integer a, int b);
+big_integer operator>>(big_integer a, int b);
+
 bool operator==(big_integer const& a, big_integer const& b);
 bool operator!=(big_integer const& a, big_integer const& b);
 bool operator<(big_integer const& a, big_integer const& b);
@@ -86,7 +91,7 @@ bool operator<=(big_integer const& a, big_integer const& b);
 bool operator>=(big_integer const& a, big_integer const& b);
 
 std::string to_string(big_integer const& a);
-//std::ostream& operator<<(std::ostream& s, big_integer const& a);
+std::ostream& operator<<(std::ostream& s, big_integer const& a);
 
 #endif
 

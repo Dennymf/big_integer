@@ -55,6 +55,10 @@ big_integer::big_integer(std::string const& str)
             break;
         }
     }
+    while (data_.size() > 1 && data_.back() == 0)
+    {
+        data_.pop_back();
+    }
 }
 
 big_integer::~big_integer() = default;
@@ -169,6 +173,10 @@ big_integer& big_integer::mul(big_integer const& rhs)
         }
         cur += tmp;
     }
+    while (cur.data_.size() > 1 && cur.data_.back() == 0)
+    {
+        cur.data_.pop_back();
+    }
     cur.sign_ =  (this->sign_ != rhs.sign_);
     *this = cur;
     return *this;
@@ -262,6 +270,76 @@ big_integer big_integer::abs() const
     return tmp;
 }
 
+std::string change_ns(std::string const& cur, int basic, int sec)
+{
+    size_t h = 1;
+    size_t i;
+    size_t c;
+    std::vector<int8_t> q;
+    std::string out = "";
+    for (size_t j = 0; j < cur.size(); j++)
+    {
+        char t = cur[j];
+        if (t == '-')
+        {
+            continue;
+        }
+        for (i = c = 0; i < h || c; i++)
+        {
+            while (i >= q.size())
+            {
+                q.push_back(0);
+            }
+            q[i] = q[i] * basic + c;
+            c = q[i] / sec;
+            q[i] %= sec;
+        }
+        if (i > h)
+            h = i;
+        q[0] += (t <= '9' ? t - '0' : t - 'A' + 10);
+    }
+    for (i = c = 0; i < h || c; i++)
+    {
+        while (i >= q.size())
+        {
+            q.push_back(0);
+        }
+        q[i] += c;
+        c = q[i] / sec;
+        q[i] %= sec;
+    }
+    --i;
+    for (; i > 0; --i)
+    {
+        out += (q[i] < 10 ? q[i] + '0' : q[i] + 'A' - 10);
+    }
+    out += (q[0] < 10 ? q[0] + '0' : q[0] + 'A' - 10);
+    return out;
+}
+
+template<typename T>
+big_integer& big_integer::logical_op(big_integer const& rhs, T const& op)
+{
+    std::string this_binary = change_ns(to_string(*this), 10, 2);
+    std::string rhs_binary = change_ns(to_string(rhs), 10, 2);
+    while (rhs_binary.size() < this_binary.size())
+    {
+        rhs_binary = "0" + rhs_binary;
+    }
+    while (rhs_binary.size() > this_binary.size())
+    {
+        this_binary = "0" + this_binary;
+    }
+    for (size_t i = 0; i < this_binary.size(); ++i)
+    {
+        this_binary[i] = static_cast<char>(op(this_binary[i] - '0', rhs_binary[i] - '0') + '0');
+    }
+    bool new_sign = op(this->sign_, rhs.sign_);
+    *this = big_integer(change_ns(this_binary, 2, 10));
+    this->sign_ = new_sign;
+    return *this;
+}
+
 big_integer& big_integer::operator+=(big_integer const& rhs)
 {
     return (sign_ == rhs.sign_ ? add(rhs) : sub(rhs));
@@ -289,31 +367,52 @@ big_integer& big_integer::operator%=(big_integer const& rhs)
     return *this;
 }
 
-//big_integer& big_integer::operator&=(big_integer const& rhs)
-//{
-//    return *this;
-//}
-//
-//big_integer& big_integer::operator|=(big_integer const& rhs)
-//{
-//    return *this;
-//}
-//
-//big_integer& big_integer::operator^=(big_integer const& rhs)
-//{
-//    return *this;
-//}
-//
-//big_integer& big_integer::operator<<=(int rhs)
-//{
-//    return *this;
-//}
-//
-//big_integer& big_integer::operator>>=(int rhs)
-//{
-//    return *this;
-//}
-//
+
+big_integer& big_integer::operator&=(big_integer const& rhs)
+{
+    return logical_op(rhs, std::bit_and<>());
+}
+
+big_integer& big_integer::operator|=(big_integer const& rhs)
+{
+    return logical_op(rhs, std::bit_or<>());
+}
+
+big_integer& big_integer::operator^=(big_integer const& rhs)
+{
+    return logical_op(rhs, std::bit_xor<>());
+}
+
+big_integer& big_integer::operator<<=(int rhs)
+{
+    std::string this_binary = change_ns(to_string(*this), 10, 2);
+    for (size_t i = 0; i < rhs; i++)
+    {
+        this_binary += "0";
+    }
+    bool tmp_sign = sign_;
+    *this = big_integer(change_ns(this_binary, 2, 10));
+    sign_ = tmp_sign;
+    return *this;
+}
+
+big_integer& big_integer::operator>>=(int rhs)
+{
+    std::string this_binary = change_ns(to_string(*this), 10, 2);
+    bool tmp_sign = sign_;
+    if (rhs >= this_binary.size())
+    {
+        *this = big_integer("0");
+        return *this;
+    }
+    else
+    {
+        *this = big_integer(change_ns(this_binary.substr(0, this_binary.size() - rhs), 2, 10));
+    }
+    sign_ = tmp_sign;
+    return *this;
+}
+
 big_integer big_integer::operator+() const
 {
     big_integer tmp(*this);
@@ -387,31 +486,31 @@ big_integer operator%(big_integer a, big_integer const& b)
     return a %= b;
 }
 
-//big_integer operator&(big_integer a, big_integer const& b)
-//{
-//    return a;
-//}
-//
-//big_integer operator|(big_integer a, big_integer const& b)
-//{
-//    return a |= b;
-//}
-//
-//big_integer operator^(big_integer a, big_integer const& b)
-//{
-//    return a;
-//}
-//
-//big_integer operator<<(big_integer a, int b)
-//{
-//    return a <<= b;
-//}
-//
-//big_integer operator>>(big_integer a, int b)
-//{
-//    return a;
-//}
-//
+big_integer operator&(big_integer a, big_integer const& b)
+{
+    return a &= b;
+}
+
+big_integer operator|(big_integer a, big_integer const& b)
+{
+    return a |= b;
+}
+
+big_integer operator^(big_integer a, big_integer const& b)
+{
+    return a ^= b;
+}
+
+big_integer operator<<(big_integer a, int b)
+{
+    return a <<= b;
+}
+
+big_integer operator>>(big_integer a, int b)
+{
+    return a >>= b;
+}
+
 bool operator==(big_integer const& a, big_integer const& b)
 {
     if (a.sign_ != b.sign_ || a.data_.size() != b.data_.size())
@@ -482,7 +581,7 @@ std::string to_string(big_integer const& a)
             out = "-";
         }
     }
-    for (int i = a.data_.size() - 1; i >= 0; i--)
+    for (size_t i = a.data_.size() - 1;; i--)
     {
         std::string tmp = std::to_string(a.data_[i]);
         while (tmp.size() < a.digits_ && (i != a.data_.size() - 1))
@@ -490,11 +589,15 @@ std::string to_string(big_integer const& a)
             tmp = "0" + tmp;
         }
         out += tmp;
+        if (i == 0)
+        {
+            break;
+        }
     }
     return out;
 }
 
-//std::ostream& operator<<(std::ostream & s, big_integer const& a)
-//{
-//    return s << to_string(a);
-//}
+std::ostream& operator<<(std::ostream & s, big_integer const& a)
+{
+    return s << to_string(a);
+}

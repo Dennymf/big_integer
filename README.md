@@ -1,5 +1,22 @@
 # Библиотека для длинной арифметики
 
+### Версия 0.4
+* Реализована операция побитового "and", совмещённое с присваиванием `&=` для любых пар чисел
+* Реализована операция побитового "or", совмещённое с присваиванием `|=` для любых пар чисел
+* Реализована операция побитового "xor", совмещённое с присваиванием `^=` для любых пар чисел
+* Реализована операция побитового "and" `&`
+* Реализована операция побитового "or" `|`
+* Реализована операция побитового "xor" `^`
+	* Правило работы побитовых операций: числа переводятся в двоичное беззнаковое представление и выполняется побитовая операций. Отдельно операция выполняется для знака.
+* Реализована операция сдвига вправо, совмещённое с присваиванием `>>=` для big_integer и int
+* Реализована операция сдвига влево, совмещённое с присваиванием `<<=` для big_integer и int
+* Реализована операция сдвига вправо `>>`
+* Реализована операция сдвига влево `<<`
+* Реализован оператор вывода `<<`
+
+### Версия 0.3.1
+* Исправлены ошибки в операциях
+
 ### Версия 0.3
 * Реализованы операции деления и остатка от деления `/, %`
 * Реализована операция деления, совмещённое с присваиванием `/=` для любых пар чисел
@@ -30,7 +47,24 @@ __________
 
 # Library for Arbitrary-precision arithmetic
 
-### Версия 0.3
+### Version 0.4
+* Implemented a bitwise operation "and", combined with the assignment of`&=` for any pairs of numbers
+* Implemented a bitwise operation "or", combined with the assignment of `|=` for any pairs of numbers
+* Implemented a bitwise operation "xor", combined with the assignment of`^=` for any pairs of numbers
+* Implemented a bitwise operation "and" `&`
+* Implemented a bitwise operation "or" `|`
+* Implemented a bitwise operation "xor" `^`
+	* Правило работы побитовых операций: числа переводятся в двоичное беззнаковое представление и выполняется побитовая операций. Отдельно операция выполняется для знака.
+* Implemented a shift right operation, combined with the assignment of `>>=` for big_integer and int
+* Implemented a shift left operation, combined with the assignment of `<<=` for big_integer and int
+* Implemented a shift right operation `>>`
+* Implemented a shift left operation `<<`
+* Implemented a output operator `<<`
+
+### Version 0.3.1
+* Fixed bugs in operations
+
+### Version 0.3
 * Implemented the division and module operations `/, %`
 * Implemented a division operation, combined with the assignment of `/=` for any pairs of numbers
 * Implemented a module operation, combined with the assignment of `%=` for any pairs of numbers
