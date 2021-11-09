@@ -54,7 +54,7 @@ __________
 * Implemented a bitwise operation "and" `&`
 * Implemented a bitwise operation "or" `|`
 * Implemented a bitwise operation "xor" `^`
-	* Правило работы побитовых операций: числа переводятся в двоичное беззнаковое представление и выполняется побитовая операций. Отдельно операция выполняется для знака.
+	* The rule of operation of bitwise operations: numbers are converted to binary unsigned representation and bitwise operations are performed. The operation is performed separately for the sign.
 * Implemented a shift right operation, combined with the assignment of `>>=` for big_integer and int
 * Implemented a shift left operation, combined with the assignment of `<<=` for big_integer and int
 * Implemented a shift right operation `>>`
